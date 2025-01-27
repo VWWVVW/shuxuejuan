@@ -5,21 +5,21 @@
 #let sxj-qg-get-level(envs: (:)) = {
   let level = envs.level
   if level == auto {
-    let questionBeforeHere = query(selector(question).before(here()))
-    if questionBeforeHere.len() != 0 {
-      level = calc.min(questionBeforeHere.last().level + 1, 3)
+    let qst-before-here = query(selector(question).before(here()))
+    if qst-before-here.len() != 0 {
+      level = calc.min(qst-before-here.last().level + 1, 3)
     } else { level = 1 }
   }
   return level
 }
 
 #let sxj-qg-get-rows(envs: (:), contents) = {
-  let qtNum = int(contents.pos().len() / 2)
+  let num-qst = int(contents.pos().len() / 2)
   let col = envs.col
-  let rowNum = calc.ceil(qtNum / col)
+  let num-row = calc.ceil(num-qst / col)
   let rows = ()
   let i = 0
-  while i < rowNum {
+  while i < num-row {
     rows.push(auto)
     rows.push(envs.gutter)
     i += 1
@@ -48,20 +48,15 @@
 }
 
 #let sxj-qg-add-punc(envs: (:), contents) = {
-  /// Tag: Codes for auto punc
-  // let numQst = query(selector(<lblQuestion>).after(here())).map(x => x.value.last())
-  // numQst.remove(0)
-  // numQst = numQst.position(x => x < numQst.first())
-  ///
+  let qst-after-here = query(selector(question).after(here())).map(x => x.level)
+  let num-to-last-qst = qst-after-here.position(x => x < qst-after-here.first())
+  if num-to-last-qst == none { num-to-last-qst = qst-after-here.len() }
+
   let r = contents.pos()
   let i = 0
   while i < r.len() {
-    /// Tag: Codes for auto punc
-    // numQst -= 1
-    // Bug: Don't know why but this line of code makes some numberings wrong
-    // r.at(i) = [#r.at(i)] + { if numQst != 0 [；] else [。] }
-    ///
-    r.at(i) = [#r.at(i)；]
+    num-to-last-qst -= 1
+    r.at(i) = [#r.at(i)] + { if num-to-last-qst != 0 [；] else [。] }
     i += 2
   }
   return arguments(..r)

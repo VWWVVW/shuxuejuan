@@ -10,17 +10,17 @@
 /// -> content
 #let sxj-blank(answer, scale: auto) = context {
   let body = []
-  let lenStd = answer
+  let len-std = answer
   if type(answer) == content or type(answer) == str {
     body = answer
-    lenStd = measure(body).width.to-absolute()
-    if lenStd == 0pt { lenStd = 1em }
+    len-std = measure(body).width.to-absolute()
+    if len-std == 0pt { len-std = 1em }
   } else if type(answer) == int or type(answer) == float {
     body = []
-    lenStd = (answer * 1em).to-absolute()
+    len-std = (answer * 1em).to-absolute()
   } else if type(answer) == length {
     body = []
-    lenStd = answer.to-absolute()
+    len-std = answer.to-absolute()
   }
   let _scale = scale
   if scale == auto {
@@ -36,7 +36,7 @@
       body
     },
     stroke: (bottom: .6pt + black),
-    width: lenStd * _scale,
+    width: len-std * _scale,
   )
 }
 

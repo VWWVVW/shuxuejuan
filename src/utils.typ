@@ -103,26 +103,26 @@
     __i += 1
   }
   // Preparing _columns for grid
-  let numCol
-  let widthContentsMax = _contents
+  let col-num
+  let width-cnts-max = _contents
     .map(it => measure(it).width.pt())
     .reduce((accumulated, new) => calc.max(accumulated, new))
-  let colMax = calc.min(
-    calc.max(calc.floor(_get-page-width-available().pt() / widthContentsMax), 1),
+  let col-max = calc.min(
+    calc.max(calc.floor(_get-page-width-available().pt() / width-cnts-max), 1),
     env-get("opt-columns-max"),
   )
   if type(col) == array {
-    numCol = col.find(x => (x <= colMax))
-    if numCol == none { numCol = colMax }
+    col-num = col.find(x => (x <= col-max))
+    if col-num == none { col-num = col-max }
   } else if type(col) == int {
-    numCol = calc.min(col, colMax)
+    col-num = calc.min(col, col-max)
   } else if col == auto {
-    numCol = colMax
+    col-num = col-max
   }
   let columns = ()
-  while numCol > 0 {
+  while col-num > 0 {
     columns.push(1fr)
-    numCol -= 1
+    col-num -= 1
   }
   // Output
   lnbk(justify: false)

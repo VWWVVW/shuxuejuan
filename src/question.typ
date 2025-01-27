@@ -57,44 +57,44 @@
   return (measure(a.first()).height - measure[test].height) * 0.45
 }
 
-#let id-question-updater(level, ..idCurrent) = {
-  let idNew = idCurrent.pos()
-  idNew.pop()
-  while idNew.len() - 1 < level {
-    idNew.push(0)
+#let id-question-updater(level, ..id-current) = {
+  let id-new = id-current.pos()
+  id-new.pop()
+  while id-new.len() - 1 < level {
+    id-new.push(0)
   }
-  idNew.at(0) += 1
-  idNew.at(level) += 1
-  idNew.push(level)
-  return idNew
+  id-new.at(0) += 1
+  id-new.at(level) += 1
+  id-new.push(level)
+  return id-new
 }
 
 #let sxj-question(level, body, qst-number-level2: none) = {
   id-question.update((..args) => id-question-updater(level, ..args))
 
-  let numL2 = none
+  let num-l2 = none
   if qst-number-level2 == auto {
     if level == 2 {
       counter-question-l2.step()
     }
-    numL2 = counter-question-l2.get().first()
+    num-l2 = counter-question-l2.get().first()
   }
-  let aryNum = _get-question-numbering(
-    level2-index: numL2,
+  let qst-numbering = _get-question-numbering(
+    level2-index: num-l2,
     numbers: counter(question).get(),
   )
 
-  let questionStyle = env-get("qst-align-number")
-  let num = [#aryNum.last()]
-  let body = [#body#metadata(id-question.get())<lblQuestion>]
+  let qst-align-style = env-get("qst-align-number")
+  let num = [#qst-numbering.last()]
+  let body = [#body]
 
   set text(size: font-size.small, weight: "medium")
   set grid(gutter: 0em)
-  if questionStyle == "One-Lined-Compact" {
+  if qst-align-style == "One-Lined-Compact" {
     set grid(columns: 1fr)
     set par(hanging-indent: measure[#num#h(0em)].width)
     grid([#num#h(0em)#body])
-  } else if questionStyle == "One-Lined" {
+  } else if qst-align-style == "One-Lined" {
     set grid(columns: 1fr)
     if level == 1 {
       set text(weight: "extrabold")
@@ -105,16 +105,16 @@
       grid([#num#h(.5em)#body])
     }
   } else {
-    let contentPosOffset = 0em
-    if questionStyle == auto {
-      contentPosOffset = _get-dist-txt-equ()
+    let offset-cnt-pos = 0em
+    if qst-align-style == auto {
+      offset-cnt-pos = _get-dist-txt-equ()
     }
     set grid(columns: (auto, 1fr))
     if level == 1 {
       set text(weight: "extrabold")
-      grid([#num#sym.wj], [#v(-contentPosOffset)#body])
+      grid([#num#sym.wj], [#v(-offset-cnt-pos)#body])
     } else {
-      grid([#num#h(.5em)], [#v(-contentPosOffset)#body])
+      grid([#num#h(.5em)], [#v(-offset-cnt-pos)#body])
     }
   }
 }

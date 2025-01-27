@@ -25,9 +25,9 @@
 }
 #let _env-upd(key, val) = {
   env-check(key)
-  let newEnv = env.get()
-  newEnv.at(key) = val
-  env.update(newEnv)
+  let env-new = env.get()
+  env-new.at(key) = val
+  env.update(env-new)
 }
 #let env-upd(..dict) = {
   let _dict = dict.named()
@@ -36,10 +36,10 @@
   }
 }
 #let with-env(..dict, body) = context {
-  let envOld = env-copy(dict.named())
+  let env-old = env-copy(dict.named())
   env-upd(..dict)
   body
-  env-upd(..envOld)
+  env-upd(..env-old)
 }
 
 #let id-question = counter("question-id")
