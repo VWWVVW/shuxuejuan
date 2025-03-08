@@ -108,7 +108,7 @@
     .map(it => measure(it).width.pt())
     .reduce((accumulated, new) => calc.max(accumulated, new))
   let col-max = calc.min(
-    calc.max(calc.floor(_get-page-width-available().pt() / width-cnts-max), 1),
+    calc.max(calc.floor((_get-page-width-available() + 0%-20pt).length.pt() / width-cnts-max), 1),
     env-get("opt-columns-max"),
   )
   if type(col) == array {
