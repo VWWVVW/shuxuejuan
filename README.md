@@ -5,7 +5,7 @@ ShuXueJuan (数学卷 in Chinese, meaning math exam) is a simple math exam Typst
 ## Setup
 
 ```Typst
-#import "@preview/shuxuejuan:0.1.1": *
+#import "@preview/shuxuejuan:0.1.2": *
 #show: shuxuejuan.with(
   font: ("SimSun",),                // 正文字体
   font-bold: ("LXGW WenKai Mono",), // 用于粗体的字体

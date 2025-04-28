@@ -21,7 +21,7 @@
   let i = 0
   while i < num-row {
     rows.push(auto)
-    rows.push(envs.gutter)
+    rows.push(auto)
     i += 1
   }
   return rows
@@ -32,7 +32,7 @@
   let b = ()
   for i in a {
     b.push(i)
-    b.push([])
+    b.push(box(height: envs.gutter, []))
   }
   return arguments(..b)
 }
@@ -108,13 +108,16 @@
 #let sxj-qg-pcs-tf = (sxj-qg-ins-answer-empty, sxj-qg-add-punc, sxj-qg-add-bracket-empty) + sxj-qg-pcs-basic
 
 /// Grab questions into one group;
+/// - gutter (length):
+///   When `sxj-qg-ins-answer-empty` is in `preprocessor`,
+///   it's the gutter between two rows of questions;
+///   Otherwise it's the gutter between two rows of content.
+///   TODO/DNF: need to be made clearer in the future,
+///   probably seperated into `row-gutter` and `ans-height`.
 /// - col (int): The number of columns you want for this group of question
 /// - level (int, auto):
 ///   The level for each question,
 ///   when set to auto, it would be the next level of current question level.
-/// - gutter (length):
-///   The gutter between two rows of questions,
-///   or the height for each question's answer.
 /// - preprocessor (array):
 ///   A array of funcs to process contents,
 ///   each func's args and return should be (envs, contents)=>arguments,
@@ -126,25 +129,23 @@
 /// -> content
 #let sxj-question-group(
   qst-align-number: "One-Lined-Compact",
-  level: auto,
+  gutter: auto,
   col: 2,
-  gutter: 1em,
+  level: auto,
   preprocessor: sxj-qg-pcs-std,
   ..contents,
 ) = {
   v(.5em)
   context {
-    let pcs = preprocessor
     let cnts = contents
-    while pcs.len() != 0 {
-      cnts = pcs.remove(0)(envs: (level: level, col: col, gutter: gutter), cnts)
-    }
+    let envs = (gutter: gutter, col: col, level: level)
+    for pcs in preprocessor { cnts = pcs(envs: envs, cnts) }
     with-env(qst-align-number: qst-align-number)[
       #grid(
         column-gutter: 0em,
-        row-gutter: 0em,
+        gutter: if preprocessor.contains(sxj-qg-ins-answer-empty) { 0em } else { gutter },
         columns: col,
-        rows: sxj-qg-get-rows(envs: (level: level, col: col, gutter: gutter), cnts),
+        rows: sxj-qg-get-rows(envs: envs, cnts),
         align: (x, y) => {
           if calc.even(y) { return left + horizon }
           return auto

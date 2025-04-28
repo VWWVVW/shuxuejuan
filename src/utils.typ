@@ -132,7 +132,7 @@
 #let sxj-footer(num-page-current, num-page-total) = {
   set text(size: font-size.small)
   set align(center)
-  [共 ] + str(num-page-current) + [ 页]
+  [第 ] + str(num-page-current) + [ 页]
   h(.5em)
   [共 ] + str(num-page-total) + [ 页]
 }

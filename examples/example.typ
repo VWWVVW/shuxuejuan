@@ -105,6 +105,7 @@
 
 #qg(
   preprocessor: sxj-qg-pcs-tf,
+  gutter: 1em,
   [啊对的，对的],
   [啊不对，不对],
   [啊对，不对],
@@ -121,6 +122,8 @@
   [啊不对],
   [对对对的],
 )
+
+// #pgbk()
 
 #title-small[第二章 语法糖]
 
@@ -207,7 +210,7 @@
 == 复杂计算（本大题共$4$小题，每小题$6$分，共$24$分）
 
 #qg(
-  gutter: 5.847em,
+  gutter: 6.3em,
   $sum_(i=1)^(+infinity)1 / (i(i+1))$,
   $1 - 1 / 2 + 1 / 3 - 1 / 4 + dots.c$,
   $integral sech x space mono(d)x$,
@@ -216,7 +219,7 @@
 
 = 判断题（本大题共$8$小题，每小题$2$分，共$16$分）
 
-#qg(preprocessor: sxj-qg-pcs-tf)[啊对的，对的][啊不对，不对][啊对，不对][对的，对的]
+#qg(preprocessor: sxj-qg-pcs-tf, gutter: 1em)[啊对的，对的][啊不对，不对][啊对，不对][对的，对的]
 
 == #br[]根据@test_，这题是对的,然后我再凑点字数；
 
