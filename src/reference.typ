@@ -24,16 +24,9 @@
   )
   let body = qst-numbering.join()
   if ref-style == auto {
-    while id-crt.len() > id-ref.len() {
-      id-crt.pop()
-    }
-    while id-crt.len() < id-ref.len() {
-      id-crt.push(0)
-    }
-    let i = 0
-    while i < id-ref.len() {
-      if (id-ref.at(i) != id-crt.at(i)) { break }
-      i += 1
+    let i = id-ref.zip(id-crt).position(x => { x.at(0) != x.at(1) })
+    if i == none {
+      i = -1
     }
     body = qst-numbering.slice(i).join()
   } else if type(ref-style) == int {

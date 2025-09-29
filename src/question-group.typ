@@ -15,26 +15,13 @@
 
 #let sxj-qg-get-rows(envs: (:), contents) = {
   let num-qst = int(contents.pos().len() / 2)
-  let col = envs.col
-  let num-row = calc.ceil(num-qst / col)
-  let rows = ()
-  let i = 0
-  while i < num-row {
-    rows.push(auto)
-    rows.push(auto)
-    i += 1
-  }
-  return rows
+  let num-row = calc.ceil(num-qst / envs.col)
+  return (auto, auto) * num-row
 }
 
 #let sxj-qg-ins-answer-empty(envs: (:), contents) = {
-  let a = contents.pos()
-  let b = ()
-  for i in a {
-    b.push(i)
-    b.push(box(height: envs.gutter, []))
-  }
-  return arguments(..b)
+  let result = contents.pos().map(it => (it, box(height: envs.gutter, []))).flatten()
+  return arguments(..result)
 }
 
 #let sxj-qg-add-bracket-empty(envs: (:), contents) = {
@@ -73,34 +60,18 @@
 }
 
 #let sxj-qg-rearrange(envs: (:), contents) = {
-  let ctt = contents.pos()
-  // Getting questions into q and answers into a
-  let q = ()
-  let a = ()
-  while ctt.len() != 0 {
-    if calc.odd(ctt.len()) {
-      q.push(ctt.pop())
-    } else {
-      a.push(ctt.pop())
-    }
-  }
-  // Filling r with q and a in rearranged order
-  let r = ()
-  let col = envs.col
-  let i = 0
-  while q.len() > 0 or a.len() > 0 {
-    if calc.even(calc.div-euclid(i, col)) {
-      if q.len() != 0 {
-        r.push(q.pop())
-      } else { r.push([]) }
-    } else {
-      if a.len() != 0 {
-        r.push(a.pop())
-      } else { r.push([]) }
-    }
-    i += 1
-  }
-  return arguments(..r)
+  let result = contents
+    .pos()
+    .chunks(2 * envs.col)
+    .map(it => it
+      .enumerate()
+      .sorted(key: x => {
+        let (i, _) = x
+        (calc.odd(i), i)
+      })
+      .map(it => it.at(1)))
+    .flatten()
+  return arguments(..result)
 }
 
 #let sxj-qg-pcs-basic = (sxj-qg-to-question, sxj-qg-rearrange)
@@ -137,9 +108,8 @@
 ) = {
   v(.5em)
   context {
-    let cnts = contents
     let envs = (gutter: gutter, col: col, level: level)
-    for pcs in preprocessor { cnts = pcs(envs: envs, cnts) }
+    let cnts = preprocessor.fold(contents, (acc, pcs) => pcs(envs: envs, acc))
     with-env(qst-align-number: qst-align-number)[
       #grid(
         column-gutter: 0em,

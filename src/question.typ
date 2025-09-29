@@ -36,19 +36,11 @@
   }
 
   let level = numbers.len()
-  let result = ()
-
   if level2-index != none and level >= 2 {
     numbers.at(1) = level2-index
   }
 
-  let i = 0
-  while i < level {
-    result.push(qst-style-func(i, numbers.at(i)))
-    i += 1
-  }
-
-  return result
+  return range(level).map(i => qst-style-func(i, numbers.at(i)))
 }
 
 #let _get-dist-txt-equ() = {
@@ -60,8 +52,8 @@
 #let id-question-updater(level, ..id-current) = {
   let id-new = id-current.pos()
   id-new.pop()
-  while id-new.len() - 1 < level {
-    id-new.push(0)
+  if id-new.len() - 1 < level {
+    id-new += (0,) * (level - id-new.len() + 1)
   }
   id-new.at(0) += 1
   id-new.at(level) += 1
@@ -112,9 +104,15 @@
     set grid(columns: (auto, 1fr))
     if level == 1 {
       set text(weight: "extrabold")
-      grid([#num#sym.wj], [#v(-offset-cnt-pos)#body])
+      grid(
+        [#num#sym.wj],
+        [#v(-offset-cnt-pos)#body],
+      )
     } else {
-      grid([#num#h(.5em)], [#v(-offset-cnt-pos)#body])
+      grid(
+        [#num#h(.5em)],
+        [#v(-offset-cnt-pos)#body],
+      )
     }
   }
 }

@@ -17,11 +17,7 @@
   return env.get().at(key, default: default)
 }
 #let env-copy(dict) = {
-  let _dict = (:)
-  for i in dict {
-    _dict.insert(i.at(0), env-get(i.at(0)))
-  }
-  return _dict
+  return dict.keys().map(k => (k, env-get(k))).to-dict()
 }
 #let _env-upd(key, val) = {
   env-check(key)

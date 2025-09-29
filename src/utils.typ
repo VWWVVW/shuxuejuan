@@ -50,15 +50,10 @@
 /// - contents (arguments): The info required.
 /// -> content
 #let sxj-student-info(line-length: 6, gutter: .5em, ..contents) = {
-  let _ctts = contents.pos()
-  if _ctts.len() == 0 { _ctts = ([班级], [姓名], [学号]) }
-  let _index = 0
+  let cnts = contents.pos()
+  if cnts.len() == 0 { cnts = ([班级], [姓名], [学号]) }
   set align(center)
-  while _index < _ctts.len() {
-    [#_ctts.at(_index)] + [：] + sxj-blank(line-length)
-    if _index != _ctts.len() - 1 { h(gutter) }
-    _index += 1
-  }
+  cnts.map(it => [#it] + [：] + sxj-blank(line-length)).join(h(gutter))
 }
 
 #let sxj-par(indent: 2em, body) = {
@@ -85,45 +80,38 @@
 ///   An array of preferred column(int).
 ///   Try automatically from the first to last
 ///   until all options have enough space to present.
-/// - opt (arguments): Options you give.
+/// - opts (arguments): Options you give.
 /// -> content
-#let sxj-options(col: (4, 2), ..opt) = context {
-  let _opts = opt.pos()
+#let sxj-options(col: (4, 2), ..opts) = context {
   // Initializing _contents
-  let _contents = ()
-  let __i = 0
-  while __i < _opts.len() {
-    _contents.push(
+  let _contents = opts
+    .pos()
+    .enumerate(start: 1)
+    .map(it => {
+      let (i, opt) = it
       grid(
         gutter: 0em,
         columns: (auto, auto),
-        numbering("A. ", __i + 1), _opts.at(__i),
-      ),
-    )
-    __i += 1
-  }
+        numbering("A. ", i), opt,
+      )
+    })
   // Preparing _columns for grid
-  let col-num
   let width-cnts-max = _contents
     .map(it => measure(it).width.pt())
     .reduce((accumulated, new) => calc.max(accumulated, new))
   let col-max = calc.min(
-    calc.max(calc.floor((_get-page-width-available() + 0%-20pt).length.pt() / width-cnts-max), 1),
+    calc.max(calc.floor((_get-page-width-available() + 0% - 20pt).length.pt() / width-cnts-max), 1),
     env-get("opt-columns-max"),
   )
-  if type(col) == array {
-    col-num = col.find(x => (x <= col-max))
-    if col-num == none { col-num = col-max }
+  let col-num = if type(col) == array {
+    let found = col.find(x => (x <= col-max))
+    if found != none { found } else { col-max }
   } else if type(col) == int {
-    col-num = calc.min(col, col-max)
+    calc.min(col, col-max)
   } else if col == auto {
-    col-num = col-max
+    col-max
   }
-  let columns = ()
-  while col-num > 0 {
-    columns.push(1fr)
-    col-num -= 1
-  }
+  let columns = (1fr,) * col-num
   // Output
   lnbk(justify: false)
   grid(columns: columns, column-gutter: 0pt, rows: auto, row-gutter: 1em, .._contents)
