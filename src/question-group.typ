@@ -25,38 +25,47 @@
 }
 
 #let sxj-qg-add-bracket-empty(envs: (:), contents) = {
-  let r = contents.pos()
-  let i = 0
-  while i < r.len() {
-    r.at(i) = [#sxj-bracket[]#r.at(i)]
-    i += 2
-  }
-  return arguments(..r)
+  let result = contents
+    .pos()
+    .enumerate()
+    .map(it => {
+      let (i, x) = it
+      if calc.even(i) {
+        [#sxj-bracket[]#x]
+      } else { x }
+    })
+  return arguments(..result)
 }
 
 #let sxj-qg-add-punc(envs: (:), contents) = {
   let qst-after-here = query(selector(question).after(here())).map(x => x.level)
   let num-to-last-qst = qst-after-here.position(x => x < qst-after-here.first())
   if num-to-last-qst == none { num-to-last-qst = qst-after-here.len() }
+  num-to-last-qst = num-to-last-qst * 2 - 2
 
-  let r = contents.pos()
-  let i = 0
-  while i < r.len() {
-    num-to-last-qst -= 1
-    r.at(i) = [#r.at(i)] + { if num-to-last-qst != 0 [；] else [。] }
-    i += 2
-  }
-  return arguments(..r)
+  let result = contents
+    .pos()
+    .enumerate()
+    .map(it => {
+      let (i, x) = it
+      if calc.even(i) {
+        [#x] + if i != num-to-last-qst [；] else [。]
+      } else { x }
+    })
+  return arguments(..result)
 }
 
 #let sxj-qg-to-question(envs: (:), contents) = {
-  let r = contents.pos()
-  let i = 0
-  while i < r.len() {
-    r.at(i) = question(level: sxj-qg-get-level(envs: envs), r.at(i))
-    i += 2
-  }
-  return arguments(..r)
+  let result = contents
+    .pos()
+    .enumerate()
+    .map(it => {
+      let (i, x) = it
+      if calc.even(i) {
+        question(level: sxj-qg-get-level(envs: envs), x)
+      } else { x }
+    })
+  return arguments(..result)
 }
 
 #let sxj-qg-rearrange(envs: (:), contents) = {
@@ -65,11 +74,11 @@
     .chunks(2 * envs.col)
     .map(it => it
       .enumerate()
-      .sorted(key: x => {
-        let (i, _) = x
+      .sorted(key: it => {
+        let (i, _) = it
         (calc.odd(i), i)
       })
-      .map(it => it.at(1)))
+      .map(it => it.last()))
     .flatten()
   return arguments(..result)
 }

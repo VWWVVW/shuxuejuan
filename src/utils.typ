@@ -83,8 +83,7 @@
 /// - opts (arguments): Options you give.
 /// -> content
 #let sxj-options(col: (4, 2), ..opts) = context {
-  // Initializing _contents
-  let _contents = opts
+  let cnts = opts
     .pos()
     .enumerate(start: 1)
     .map(it => {
@@ -95,12 +94,10 @@
         numbering("A. ", i), opt,
       )
     })
-  // Preparing _columns for grid
-  let width-cnts-max = _contents
-    .map(it => measure(it).width.pt())
-    .reduce((accumulated, new) => calc.max(accumulated, new))
+
+  let width-max = cnts.map(it => measure(it).width.pt()).reduce((acc, new) => calc.max(acc, new))
   let col-max = calc.min(
-    calc.max(calc.floor((_get-page-width-available() + 0% - 20pt).length.pt() / width-cnts-max), 1),
+    calc.max(calc.floor((_get-page-width-available() + 0% - 20pt).length.pt() / width-max), 1),
     env-get("opt-columns-max"),
   )
   let col-num = if type(col) == array {
@@ -111,10 +108,9 @@
   } else if col == auto {
     col-max
   }
-  let columns = (1fr,) * col-num
-  // Output
+
   lnbk(justify: false)
-  grid(columns: columns, column-gutter: 0pt, rows: auto, row-gutter: 1em, .._contents)
+  grid(columns: (1fr,) * col-num, column-gutter: 0pt, rows: auto, row-gutter: 1em, ..cnts)
 }
 
 #let sxj-footer(num-page-current, num-page-total) = {
