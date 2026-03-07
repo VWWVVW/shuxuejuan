@@ -3,14 +3,12 @@
 #import "question.typ": *
 
 #let sxj-qg-get-level(envs: (:)) = {
-  let level = envs.level
-  if level == auto {
+  if envs.level == auto {
     let qst-before-here = query(selector(question).before(here()))
     if qst-before-here.len() != 0 {
-      level = calc.min(qst-before-here.last().level + 1, 3)
-    } else { level = 1 }
-  }
-  return level
+      calc.min(qst-before-here.last().level + 1, 3)
+    } else { 1 }
+  } else { envs.level }
 }
 
 #let sxj-qg-get-rows(envs: (:), contents) = {
@@ -20,21 +18,18 @@
 }
 
 #let sxj-qg-ins-answer-empty(envs: (:), contents) = {
-  let result = contents.pos().map(it => (it, box(height: envs.gutter, []))).flatten()
-  return arguments(..result)
+  arguments(..contents.pos().map(it => (it, box(height: envs.gutter, []))).flatten())
 }
 
 #let sxj-qg-add-bracket-empty(envs: (:), contents) = {
-  let result = contents
+  arguments(..contents
     .pos()
     .enumerate()
-    .map(it => {
-      let (i, x) = it
+    .map(((i, x)) => {
       if calc.even(i) {
         [#sxj-bracket[]#x]
       } else { x }
-    })
-  return arguments(..result)
+    }))
 }
 
 #let sxj-qg-add-punc(envs: (:), contents) = {
@@ -43,44 +38,35 @@
   if num-to-last-qst == none { num-to-last-qst = qst-after-here.len() }
   num-to-last-qst = num-to-last-qst * 2 - 2
 
-  let result = contents
+  arguments(..contents
     .pos()
     .enumerate()
-    .map(it => {
-      let (i, x) = it
+    .map(((i, x)) => {
       if calc.even(i) {
         [#x] + if i != num-to-last-qst [；] else [。]
       } else { x }
-    })
-  return arguments(..result)
+    }))
 }
 
 #let sxj-qg-to-question(envs: (:), contents) = {
-  let result = contents
+  arguments(..contents
     .pos()
     .enumerate()
-    .map(it => {
-      let (i, x) = it
+    .map(((i, x)) => {
       if calc.even(i) {
         question(level: sxj-qg-get-level(envs: envs), x)
       } else { x }
-    })
-  return arguments(..result)
+    }))
 }
 
 #let sxj-qg-rearrange(envs: (:), contents) = {
-  let result = contents
-    .pos()
-    .chunks(2 * envs.col)
-    .map(it => it
-      .enumerate()
-      .sorted(key: it => {
-        let (i, _) = it
-        (calc.odd(i), i)
-      })
-      .map(it => it.last()))
-    .flatten()
-  return arguments(..result)
+  arguments(
+    ..contents
+      .pos()
+      .chunks(2 * envs.col)
+      .map(it => it.enumerate().sorted(key: ((i, _)) => (calc.odd(i), i)).map(it => it.last()))
+      .flatten(),
+  )
 }
 
 #let sxj-qg-pcs-basic = (sxj-qg-to-question, sxj-qg-rearrange)

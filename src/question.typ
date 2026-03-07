@@ -12,27 +12,22 @@
 }
 
 #let _get-question-numbering(
-  qst-style: ("一、", "1.", "(1)"),
+  qst-style: ("一、", "1.", "(1)", "①"),
   level2-index: none,
   numbers: none,
 ) = {
-  let qst-style-func(level, index) = {
-    return numbering("1.", index)
-  }
-  if type(qst-style) == array {
-    qst-style-func = {
-      (level, index) => {
-        if level < qst-style.len() {
-          return numbering(
-            qst-style.at(level),
-            index,
-          )
-        }
-        return numbering("1.", index)
+  let fn-qst-style = if type(qst-style) == array {
+    (level, index) => {
+      if level < qst-style.len() {
+        numbering(qst-style.at(level), index)
+      } else {
+        numbering("1.", index)
       }
     }
   } else if type(qst-style) == function {
-    qst-style-func = qst-style
+    qst-style
+  } else {
+    (level, index) => return numbering("1.", index)
   }
 
   let level = numbers.len()
@@ -40,7 +35,7 @@
     numbers.at(1) = level2-index
   }
 
-  return range(level).map(i => qst-style-func(i, numbers.at(i)))
+  return range(level).map(i => fn-qst-style(i, numbers.at(i)))
 }
 
 #let _get-dist-txt-equ() = {
@@ -75,21 +70,20 @@
     level2-index: num-l2,
     numbers: counter(question).get(),
   )
+  let num = qst-numbering.last()
 
-  let qst-align-style = env-get("qst-align-number")
-  let num = [#qst-numbering.last()]
-  let body = [#body]
-
-  set text(size: font-size.small, weight: "medium")
+  set text(
+    size: font-size.small,
+    weight: if level == 1 { "extrabold" } else { "medium" },
+  )
   set grid(gutter: 0em)
+  let qst-align-style = env-get("qst-align-number")
   if qst-align-style == "One-Lined-Compact" {
-    set grid(columns: 1fr)
     set par(hanging-indent: measure[#num#h(0em)].width)
-    grid([#num#h(0em)#body])
+    grid(columns: 1fr, [#num#h(0em)#body])
   } else if qst-align-style == "One-Lined" {
     set grid(columns: 1fr)
     if level == 1 {
-      set text(weight: "extrabold")
       set par(hanging-indent: measure[#num#h(-.65em)].width)
       grid([#num#body])
     } else {
@@ -97,22 +91,10 @@
       grid([#num#h(.5em)#body])
     }
   } else {
-    let offset-cnt-pos = 0em
-    if qst-align-style == auto {
-      offset-cnt-pos = _get-dist-txt-equ()
-    }
-    set grid(columns: (auto, 1fr))
-    if level == 1 {
-      set text(weight: "extrabold")
-      grid(
-        [#num#sym.wj],
-        [#v(-offset-cnt-pos)#body],
-      )
-    } else {
-      grid(
-        [#num#h(.5em)],
-        [#v(-offset-cnt-pos)#body],
-      )
-    }
+    grid(
+      columns: (auto, 1fr),
+      if level == 1 [#num#sym.wj] else [#num#h(.5em)],
+      [#v(if qst-align-style == auto { -_get-dist-txt-equ() } else { 0em })#body],
+    )
   }
 }

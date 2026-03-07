@@ -22,15 +22,16 @@
     level2-index: level2-index,
     numbers: id-show,
   )
-  let body = qst-numbering.join()
-  if ref-style == auto {
-    let i = id-ref.zip(id-crt).position(x => { x.at(0) != x.at(1) })
+  let body = if ref-style == auto {
+    let i = id-ref.zip(id-crt).position(x => x.at(0) != x.at(1))
     if i == none {
       i = -1
     }
-    body = qst-numbering.slice(i).join()
+    qst-numbering.slice(i).join()
   } else if type(ref-style) == int {
-    body = qst-numbering.slice(ref-style).join()
+    qst-numbering.slice(ref-style).join()
+  } else {
+    qst-numbering.join()
   }
   return link(it.target)[#body]
 }

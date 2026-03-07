@@ -22,21 +22,21 @@
     body = []
     len-std = answer.to-absolute()
   }
-  let _scale = scale
-  if scale == auto {
-    if type(answer) == content or type(answer) == str {
-      _scale = 2
-    } else {
-      _scale = 1
-    }
-  }
+
+  let scale = if scale == auto {
+    if type(answer) == content or type(answer) == str { 2 } else { 1 }
+  } else { scale }
+  let width = if type(scale) == length {
+    scale
+  } else { len-std * scale }
+
   box(
     {
       set align(center + horizon)
       body
     },
     stroke: (bottom: .6pt + black),
-    width: len-std * _scale,
+    width: width,
   )
 }
 
@@ -44,9 +44,8 @@
 /// - answer (content): The answer you want to put in a bracket.
 /// -> content
 #let sxj-bracket(answer) = {
-  [（#box(
-    {
+  [（#box({
       set align(center)
       answer
-    },width: 1em)）]
+    }, width: 1em)）]
 }

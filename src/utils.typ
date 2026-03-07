@@ -86,8 +86,7 @@
   let cnts = opts
     .pos()
     .enumerate(start: 1)
-    .map(it => {
-      let (i, opt) = it
+    .map(((i, opt)) => {
       grid(
         gutter: 0em,
         columns: (auto, auto),
