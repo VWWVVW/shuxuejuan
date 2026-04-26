@@ -1,100 +1,52 @@
 #import "env.typ": *
-#import "utils.typ": *
-#import "answer.typ": *
+#import "term.typ": *
 
-#let question = heading
+// Note: `QST-STYLE` should be compatable with `COMPOSER`
+#let QST-STYLE = (
+  NORMAL: COMPOSER.TERMS,
+  COMPLEX: COMPOSER.GRID,
+  COMPACT: COMPOSER.PAR,
+)
 
-/// Reset all counters of question.
-/// -> none
-#let sxj-question-reset-num() = {
-  counter(question).update(0)
-  counter-question-l2.update(1)
-}
-
-#let _get-question-numbering(
-  qst-style: ("一、", "1.", "(1)", "①"),
-  level2-index: none,
-  numbers: none,
+#let sxj-numbering-numbers(
+  numbering-info: ("一、", "1.", "(1)", "①"),
+  numbers,
 ) = {
-  let fn-qst-style = if type(qst-style) == array {
+  let my-numbering = if type(numbering-info) == array {
     (level, index) => {
-      if level < qst-style.len() {
-        numbering(qst-style.at(level), index)
-      } else {
-        numbering("1.", index)
-      }
+      numbering(numbering-info.at(level, default: "1."), index)
     }
-  } else if type(qst-style) == function {
-    qst-style
+  } else if type(numbering-info) == function {
+    numbering-info
   } else {
-    (level, index) => return numbering("1.", index)
-  }
-
-  let level = numbers.len()
-  if level2-index != none and level >= 2 {
-    numbers.at(1) = level2-index
-  }
-
-  return range(level).map(i => fn-qst-style(i, numbers.at(i)))
+    (level, index) => numbering("1.", index)
+  } // Note: `level` starts from 0 in `fn numbers-numbering`
+  return numbers.enumerate().map(((i, num)) => my-numbering(i, num))
 }
 
-#let _get-dist-txt-equ() = {
-  let a = query(selector(math.equation).after(here()))
-  if a.len() == 0 { return 0em }
-  return (measure(a.first()).height - measure[test].height) * 0.45
-}
+#let sxj-question(
+  qst-style: auto,
+  level: 2,
+  hanging-indent: auto,
+  counter-with-acc-to-num: (counter-got, level) => sxj-numbering-numbers(
+    sxj-counter-with-acc-to-nums-default(counter-got),
+  ).at(level - 1),
+  body,
+) = {
+  counter-question.update((..nums) => counter-with-acc-next(nums.pos(), level))
+  counter-answer.update(0)
+  context [#metadata((
+    type: SXJ-BODY-TYPE.QST,
+    counter-question: counter-question.get(),
+  ))<sxj-label-question>]
 
-#let id-question-updater(level, ..id-current) = {
-  let id-new = id-current.pos()
-  id-new.pop()
-  if id-new.len() - 1 < level {
-    id-new += (0,) * (level - id-new.len() + 1)
-  }
-  id-new.at(0) += 1
-  id-new.at(level) += 1
-  id-new.push(level)
-  return id-new
-}
-
-#let sxj-question(level, body, qst-number-level2: none) = {
-  id-question.update((..args) => id-question-updater(level, ..args))
-
-  let num-l2 = none
-  if qst-number-level2 == auto {
-    if level == 2 {
-      counter-question-l2.step()
-    }
-    num-l2 = counter-question-l2.get().first()
-  }
-  let qst-numbering = _get-question-numbering(
-    level2-index: num-l2,
-    numbers: counter(question).get(),
+  let num = context counter-with-acc-to-num(counter-question.get(), level) + sym.wj
+  context sxj-term(
+    composer: sxj-get-composer-for(composer: qst-style, body),
+    hanging-indent: if hanging-indent == auto {
+      measure[#num].width
+    } else { hanging-indent },
+    num,
+    body,
   )
-  let num = qst-numbering.last()
-
-  set text(
-    size: font-size.small,
-    weight: if level == 1 { "extrabold" } else { "medium" },
-  )
-  set grid(gutter: 0em)
-  let qst-align-style = env-get("qst-align-number")
-  if qst-align-style == "One-Lined-Compact" {
-    set par(hanging-indent: measure[#num#h(0em)].width)
-    grid(columns: 1fr, [#num#h(0em)#body])
-  } else if qst-align-style == "One-Lined" {
-    set grid(columns: 1fr)
-    if level == 1 {
-      set par(hanging-indent: measure[#num#h(-.65em)].width)
-      grid([#num#body])
-    } else {
-      set par(hanging-indent: measure[#num#h(.18em)].width)
-      grid([#num#h(.5em)#body])
-    }
-  } else {
-    grid(
-      columns: (auto, 1fr),
-      if level == 1 [#num#sym.wj] else [#num#h(.5em)],
-      [#v(if qst-align-style == auto { -_get-dist-txt-equ() } else { 0em })#body],
-    )
-  }
 }

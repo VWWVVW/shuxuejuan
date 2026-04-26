@@ -1,46 +1,71 @@
 #import "env.typ"
-#import "utils.typ": *
+#import "term.typ": *
 #import "question.typ": *
 #import "question-group.typ": *
 #import "reference.typ": *
-#import "answer.typ"
+#import "answer.typ": *
+#import "utils.typ": *
 
-#let title = sxj-title
-#let title-small = sxj-title-small
 #let si = sxj-student-info
 #let un = sxj-unit
-#let rn = sxj-question-reset-num
 #let op = sxj-options
-#let qg = sxj-question-group
-#let bl = sxj-blank
 #let br = sxj-bracket
+#let bl = sxj-blank
+#let qst = sxj-question
+#let qg = sxj-question-group
+#let cr = sxj-counter-question-reset
 
-#let shuxuejuan(font: (), font-bold: (), leading: .68em, qst-number-level2: none, body) = {
+#let shuxuejuan(
+  font: (),
+  font-bold: auto,
+  font-size: (small: 10.5pt, medium: 12pt, large: 14pt),
+  counter-with-acc-to-nums: sxj-counter-with-acc-to-nums-default,
+  ans-shown: true,
+  body,
+) = {
+  context env-upd(font-size: font-size, ans-shown: ans-shown)
   set text(font: font)
-  set pagebreak(weak: true)
-  set heading(numbering: "1.")
-  set table(align: center + horizon)
-  set par(leading: leading)
-  set page(
-    paper: "iso-b5",
-    footer: context sxj-footer(counter(page).get().first(), counter(page).final().first()),
-  )
-
+  // Note: when `font` can't be bold, use `font-bold` as a fallback.
+  show text
+    .where(weight: "semibold")
+    .or(text.where(weight: "bold"))
+    .or(
+      text.where(weight: "extrabold"),
+    ): set text(font: font-bold)
   show "。": "．"
-  show text.where(weight: "semibold").or(text.where(weight: "bold")).or(text.where(weight: "extrabold")): set text(
-    // Can't bold SimSun, use LXGW WenKai for substitution
-    font: font-bold,
+
+  set page(
+    width: 19.5cm,
+    height: 27cm,
+    margin: 37pt,
+    footer: context sxj-footer(
+      counter(page).get().first(),
+      counter(page).final().first(),
+    ),
   )
-  show math.equation: sxj-equ
 
-  show heading: it => sxj-question(it.level, it.body, qst-number-level2: qst-number-level2)
-  show ref: it => {
-    if it.element.func() == heading {
-      sxj-ref-question(it, qst-number-level2: qst-number-level2)
-    }
+  show heading: it => {
+    set text(
+      size: env-get("font-size").small,
+      weight: if it.level == 1 { "extrabold" } else { "medium" },
+    )
+    sxj-question(
+      qst-style: env-get("qst-style"),
+      level: it.level,
+      hanging-indent: if it.level == 2 { 1.5em } else { auto },
+      counter-with-acc-to-num: (counter-got, level) => sxj-numbering-numbers(
+        counter-with-acc-to-nums(counter-got),
+      ).at(level - 1),
+      it.body,
+    )
   }
-
-  sxj-question-reset-num()
+  show ref: it => sxj-ref-to-question(
+    ref-style: env-get("ref-style"),
+    counter-with-acc-to-nums: counter-with-acc-to-nums,
+    it,
+  )
+  show title: it => sxj-title(size: env-get("font-size").large, body: it)
+  show math.equation: it => sxj-equ(spacing: .2em, it)
 
   body
 }
