@@ -1,7 +1,7 @@
 #import "env.typ": *
 #import "term.typ": *
 
-// Note: `QST-STYLE` should be compatable with `COMPOSER`
+// Note: `QST-STYLE` should be compatible with `COMPOSER`
 #let QST-STYLE = (
   NORMAL: COMPOSER.TERMS,
   COMPLEX: COMPOSER.GRID,
@@ -47,6 +47,6 @@
       measure[#num].width
     } else { hanging-indent },
     num,
-    body,
+    sxj-content-trim(body),
   )
 }

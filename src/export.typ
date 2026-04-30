@@ -11,6 +11,7 @@
 #let op = sxj-options
 #let br = sxj-bracket
 #let bl = sxj-blank
+#let ans = sxj-answer-jie
 #let qst = sxj-question
 #let qg = sxj-question-group
 #let cr = sxj-counter-question-reset
@@ -52,10 +53,16 @@
     sxj-question(
       qst-style: env-get("qst-style"),
       level: it.level,
-      hanging-indent: if it.level == 2 { 1.5em } else { auto },
-      counter-with-acc-to-num: (counter-got, level) => sxj-numbering-numbers(
-        counter-with-acc-to-nums(counter-got),
-      ).at(level - 1),
+      hanging-indent: ((2, measure("10.").width), (3, measure(" () ").width))
+        .filter(((level, _)) => level == it.level)
+        .map(((_, val)) => val)
+        .first(default: auto),
+      counter-with-acc-to-num: (counter-got, level) => (
+        sxj-numbering-numbers(
+          counter-with-acc-to-nums(counter-got),
+        ).at(level - 1)
+          + if level in (2, 3) [ ]
+      ),
       it.body,
     )
   }

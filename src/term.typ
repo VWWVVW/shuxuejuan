@@ -4,6 +4,14 @@
   PAR: "par",
 )
 
+#let sxj-content-trim(body) = (
+  if type(body) == content {
+    if body.has("children") and body.children.first() in ([ ],) {
+      body.children.slice(1).join()
+    } else { body }
+  } else { body }
+)
+
 #let sxj-get-composer-for(composer: auto, body) = if composer != auto {
   return composer
 } else {

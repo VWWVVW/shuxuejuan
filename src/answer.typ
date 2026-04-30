@@ -1,4 +1,5 @@
 #import "env.typ": *
+#import "term.typ": *
 
 #let sxj-answer(
   ans-type: SXJ-BODY-TYPE.ANS.RAW,
@@ -21,6 +22,15 @@
       body: body,
     ))<sxj-label-answer>]
   }
+}
+
+#let sxj-answer-jie(body) = context {
+  let tag = [解：] + sym.wj
+  sxj-answer(ans-type: SXJ-BODY-TYPE.ANS.RAW, sxj-term(
+    hanging-indent: measure(tag).width,
+    tag,
+    sxj-content-trim(body),
+  ))
 }
 
 #let sxj-bracket(
