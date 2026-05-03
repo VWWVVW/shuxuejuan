@@ -1,4 +1,5 @@
 #import "question.typ": *
+#import "answer.typ": *
 
 #let sxj-qg-get-level(envs) = if envs.level != auto { envs.level } else {
   calc.min(
@@ -12,29 +13,27 @@
   )
 }
 
-#let sxj-qg-get-rows(envs, cnts) = {
-  let num-qst = int(cnts.len() / 2)
-  let num-row = calc.ceil(num-qst / envs.col)
-  (auto, envs.gutter) * num-row
-}
-
 #let sxj-qg-ins-ans-empty(envs, cnts) = (
-  cnts.map(qst => (qst, [])).flatten()
+  cnts.map(qst => (qst, none)).flatten()
 )
 
-#let sxj-qg-add-br-empty(envs, cnts) = (
-  // DNF: `（ ）` should be a func.
-  cnts.chunks(2).map(((qst, ans)) => ([（ ）#qst], ans)).flatten()
+#let sxj-qg-to-ans(envs, cnts) = (
+  cnts.chunks(2).map(((qst, ans)) => (qst, sxj-answer-jie(ans))).flatten()
+)
+
+#let sxj-qg-mv-ans-to-br(envs, cnts) = (
+  cnts.chunks(2).map(((qst, ans)) => ([#sxj-bracket(ans)#qst], none)).flatten()
 )
 
 #let sxj-qg-add-punc(envs, cnts) = (
   cnts.chunks(2).map(((qst, ans)) => (qst + [；], ans)).flatten()
 )
 
+// DNF: causes `layout did not converge winthin 5 attempts`
 #let sxj-qg-add-auto-punc(envs, cnts) = {
   let levels = query(
     selector(<sxj-label-question>).after(here()),
-  ).map(x => x.value.at(1))
+  ).map(x => x.value.counter-question.at(1))
   let num-to-last = levels.position(level => level != envs.level)
   if num-to-last == none { num-to-last = levels.len() }
 
@@ -46,47 +45,49 @@
   ).flatten()
 }
 
-#let sxj-qg-to-question(envs, cnts) = (
+#let sxj-qg-to-qst(envs, cnts) = (
   cnts.chunks(2).map(((qst, ans)) => (sxj-question(level: envs.level, qst), ans)).flatten()
 )
 
-#let sxj-qg-rearrange(envs, cnts) = (
-  cnts
-    .chunks(2 * envs.col)
-    .map(it => it
-      .enumerate()
-      .sorted(
-        key: ((i, _)) => (calc.odd(i), i),
-      )
-      .map(((idx, cnt)) => cnt))
-    .flatten()
+#let sxj-qg-to-ans-jie(envs, cnts) = (
+  cnts.chunks(2).map(((qst, ans)) => (qst, sxj-answer-jie(ans))).flatten()
 )
 
-#let sxj-qg-pcs-basic = (sxj-qg-to-question, sxj-qg-rearrange)
-#let sxj-qg-pcs-std = (sxj-qg-ins-ans-empty, sxj-qg-add-punc) + sxj-qg-pcs-basic
-#let sxj-qg-pcs-tf = (sxj-qg-ins-ans-empty, sxj-qg-add-punc, sxj-qg-add-br-empty) + sxj-qg-pcs-basic
+#let sxj-qg-pack(envs, cnts) = (
+  cnts
+    .chunks(2)
+    .map(((qst, ans)) => grid(
+      columns: 1fr,
+      rows: (1em + par.leading, envs.gutter),
+      align(horizon, qst),
+      ans,
+    ))
+)
+
+#let sxj-qg-pcs-basic = (sxj-qg-to-qst, sxj-qg-pack)
+#let sxj-qg-pcs-std = (sxj-qg-add-punc,) + sxj-qg-pcs-basic
+#let sxj-qg-pcs-tf = (sxj-qg-add-punc, sxj-qg-mv-ans-to-br) + sxj-qg-pcs-basic
 
 #let sxj-question-group(
-  qst-style: auto,
   col: 2,
-  gutter: none,
+  gutter: 0em,
   level: auto,
   preprocessor: sxj-qg-pcs-std,
   ..contents,
 ) = context {
   let envs = (
     col: col,
-    gutter: if gutter == none { 1em } else { gutter },
+    gutter: gutter,
     level: sxj-qg-get-level((level: level)),
   )
   let cnts = preprocessor.fold(contents.pos(), (acc, pcs) => pcs(envs, acc))
 
-  v(.5em)
+  v(-.5 * par.spacing)
   grid(
     gutter: 0em,
     columns: (1fr,) * envs.col,
-    rows: sxj-qg-get-rows(envs, cnts),
+    rows: auto,
     ..cnts
   )
-  v(-1.5em)
+  v(-.5 * par.spacing)
 }

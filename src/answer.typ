@@ -24,13 +24,17 @@
   }
 }
 
-#let sxj-answer-jie(body) = context {
+#let sxj-answer-jie(height: auto, body) = context {
   let tag = [解：] + sym.wj
-  sxj-answer(ans-type: SXJ-BODY-TYPE.ANS.RAW, sxj-term(
-    hanging-indent: measure(tag).width,
-    tag,
-    sxj-content-trim(body),
-  ))
+  box(
+    height: height,
+    sxj-answer(ans-type: SXJ-BODY-TYPE.ANS.RAW, sxj-term(
+      composer: COMPOSER.GRID,
+      hanging-indent: measure(tag).width,
+      tag,
+      sxj-content-trim(body),
+    )),
+  )
 }
 
 #let sxj-bracket(
@@ -46,7 +50,7 @@
         fill: fill,
         answer,
       )),
-      width: if measure(answer).width < .7em.to-absolute() {
+      width: if measure(answer).width < .9em.to-absolute() {
         1em
       } else { 1.7em },
     )

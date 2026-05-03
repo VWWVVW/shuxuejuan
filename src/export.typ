@@ -48,7 +48,7 @@
   show heading: it => {
     set text(
       size: env-get("font-size").small,
-      weight: if it.level == 1 { "extrabold" } else { "medium" },
+      weight: if it.level == 1 { "bold" } else { "medium" },
     )
     sxj-question(
       qst-style: env-get("qst-style"),
