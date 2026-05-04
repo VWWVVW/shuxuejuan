@@ -6,8 +6,15 @@
 
 #let sxj-content-trim(body) = (
   if type(body) == content {
-    if body.has("children") and body.children.first() in ([ ],) {
-      body.children.slice(1).join()
+    if body.has("children") {
+      let trimmed = body
+      if trimmed.children.first() == [ ] {
+        trimmed = trimmed.children.slice(1).join()
+      }
+      if trimmed.children.last() == [ ] {
+        trimmed = trimmed.children.slice(0, -1).join()
+      }
+      trimmed
     } else { body }
   } else { body }
 )
@@ -16,14 +23,12 @@
   return composer
 } else {
   if type(body) == content {
-    if body.func() == grid {
+    if body.func() in (std.grid, math.equation) {
       return COMPOSER.GRID
     }
-    if body.fields().keys().contains("children") {
-      if body.children.len() != 0 {
-        if body.children.first().func() == grid {
-          return COMPOSER.GRID
-        }
+    if body.has("children") and body.children.len() != 0 {
+      if body.children.first().func() == grid {
+        return COMPOSER.GRID
       }
     }
   }

@@ -51,7 +51,7 @@
       weight: if it.level == 1 { "bold" } else { "medium" },
     )
     sxj-question(
-      qst-style: env-get("qst-style"),
+      composer: env-get("qst-style"),
       level: it.level,
       hanging-indent: ((2, measure("10.").width), (3, measure(" () ").width))
         .filter(((level, _)) => level == it.level)

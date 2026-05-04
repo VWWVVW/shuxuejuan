@@ -24,12 +24,12 @@
   }
 }
 
-#let sxj-answer-jie(height: auto, body) = context {
+#let sxj-answer-jie(composer: auto, height: auto, body) = context {
   let tag = [解：] + sym.wj
   box(
     height: height,
     sxj-answer(ans-type: SXJ-BODY-TYPE.ANS.RAW, sxj-term(
-      composer: COMPOSER.GRID,
+      composer: sxj-get-composer-for(composer: composer, body),
       hanging-indent: measure(tag).width,
       tag,
       sxj-content-trim(body),

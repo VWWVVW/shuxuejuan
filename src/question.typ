@@ -1,13 +1,6 @@
 #import "env.typ": *
 #import "term.typ": *
 
-// Note: `QST-STYLE` should be compatible with `COMPOSER`
-#let QST-STYLE = (
-  NORMAL: COMPOSER.TERMS,
-  COMPLEX: COMPOSER.GRID,
-  COMPACT: COMPOSER.PAR,
-)
-
 #let sxj-numbering-numbers(
   numbering-info: ("一、", "1.", "(1)", "①"),
   numbers,
@@ -25,7 +18,7 @@
 }
 
 #let sxj-question(
-  qst-style: auto,
+  composer: auto,
   level: 2,
   hanging-indent: auto,
   counter-with-acc-to-num: (counter-got, level) => sxj-numbering-numbers(
@@ -33,6 +26,8 @@
   ).at(level - 1),
   body,
 ) = {
+  body = sxj-content-trim(body)
+
   counter-question.update((..nums) => counter-with-acc-next(nums.pos(), level))
   counter-answer.update(0)
   context [#metadata((
@@ -42,11 +37,11 @@
 
   let num = context counter-with-acc-to-num(counter-question.get(), level) + sym.wj
   context sxj-term(
-    composer: sxj-get-composer-for(composer: qst-style, body),
+    composer: sxj-get-composer-for(composer: composer, body),
     hanging-indent: if hanging-indent == auto {
       measure[#num].width
     } else { hanging-indent },
     num,
-    sxj-content-trim(body),
+    body,
   )
 }
