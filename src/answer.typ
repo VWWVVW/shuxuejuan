@@ -9,12 +9,14 @@
 ) = {
   context counter-answer.step()
 
-  set text(fill: fill)
   context {
     let shown = if shown == auto {
       env-get("ans-shown")
     } else { shown }
+
+    set text(fill: fill)
     if shown { body } else { hide(body) }
+
     [#metadata((
       type: ans-type,
       counter-question: counter-question.get(),

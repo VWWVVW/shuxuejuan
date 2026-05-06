@@ -8,9 +8,12 @@
   let counter-here = counter-question.get()
   // Note: use `query` as a workaround because currently
   //   `counter-question.at(it.target)` can't get the actual counter.
-  let counter-there = (
-    query(selector(<sxj-label-question>).after(it.target)).first().value
+  let counter-there = query(
+    selector(<sxj-label-question>).after(it.target),
   )
+    .first()
+    .value
+    .counter-question
   let ct-here = counter-here.slice(2, counter-here.at(1) * 2 + 2)
   let ct-there = counter-there.slice(2, counter-there.at(1) * 2 + 2)
   if ct-here.len() < ct-there.len() {
@@ -25,11 +28,8 @@
       .chunks(2, exact: true)
       .zip(ct-there.chunks(2, exact: true))
       .position(((idx-here, idx-there)) => idx-here != idx-there)
-    nums
-      .slice(if idx-diff != none and idx-diff != nums.len() {
-        idx-diff
-      } else { -1 })
-      .join()
+    let idx-diff = if idx-diff in (none, nums.len()) { -1 } else { idx-diff }
+    nums.slice(idx-diff).join()
   } else if type(ref-style) == int {
     assert(
       ref-style > 0,

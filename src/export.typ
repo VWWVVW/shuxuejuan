@@ -17,22 +17,12 @@
 #let cr = sxj-counter-question-reset
 
 #let shuxuejuan(
-  font: (),
-  font-bold: auto,
   font-size: (small: 10.5pt, medium: 12pt, large: 14pt),
   counter-with-acc-to-nums: sxj-counter-with-acc-to-nums-default,
   ans-shown: true,
   body,
 ) = {
   context env-upd(font-size: font-size, ans-shown: ans-shown)
-  set text(font: font)
-  // Note: when `font` can't be bold, use `font-bold` as a fallback.
-  show text
-    .where(weight: "semibold")
-    .or(text.where(weight: "bold"))
-    .or(
-      text.where(weight: "extrabold"),
-    ): set text(font: font-bold)
   show "。": "．"
 
   set page(
