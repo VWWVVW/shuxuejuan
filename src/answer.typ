@@ -7,6 +7,8 @@
   fill: color.maroon,
   body,
 ) = {
+  // Note: use two `context`s here to make sure `counter-answer.get()`
+  //   in `metadata` could get the stepped value.
   context counter-answer.step()
 
   context {
@@ -26,16 +28,27 @@
   }
 }
 
-#let sxj-answer-jie(composer: auto, height: auto, body) = context {
+#let sxj-answer-jie(
+  shown: auto,
+  fill: color.maroon,
+  composer: auto,
+  height: auto,
+  body,
+) = context {
   let tag = [解：] + sym.wj
   box(
     height: height,
-    sxj-answer(ans-type: SXJ-BODY-TYPE.ANS.RAW, sxj-term(
-      composer: sxj-get-composer-for(composer: composer, body),
-      hanging-indent: measure(tag).width,
-      tag,
-      sxj-content-trim(body),
-    )),
+    sxj-answer(
+      ans-type: SXJ-BODY-TYPE.ANS.RAW,
+      shown: shown,
+      fill: fill,
+      sxj-term(
+        composer: sxj-get-composer-for(composer: composer, body),
+        hanging-indent: measure(tag).width,
+        tag,
+        sxj-content-trim(body),
+      ),
+    ),
   )
 }
 
@@ -62,8 +75,8 @@
 #let sxj-blank(
   shown: auto,
   fill: color.maroon,
-  answer,
   scale: auto,
+  answer,
 ) = context {
   let body = []
   let len

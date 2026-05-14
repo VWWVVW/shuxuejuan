@@ -49,7 +49,7 @@
 
 #let counter-question = counter("sxj-counter-question")
 
-#let counter-with-acc-next(current-counter, level, step: 1) = {
+#let counter-with-acc-step(current-counter, level, step: 1) = {
   let result = current-counter.chunks(2, exact: true)
   if result.len() <= level {
     result += ((0, 0),) * (level - result.len() + 1)
@@ -82,11 +82,11 @@
     .slice(2, 2 * counter-got.at(1) + 2)
     .chunks(2, exact: true)
     .map(
-      ((acc, rec)) => rec,
+      ((_, rec)) => rec,
     )
 )
 
-#let counter-with-acc-reset(counter-got, level: 1, to: 0) = {
+#let counter-with-acc-update(counter-got, level: 1, to: 0) = {
   let result = counter-got
   if result.len() < 2 * level {
     result += (0,) * (2 * level - result.len())
@@ -99,6 +99,6 @@
   )
 }
 
-#let sxj-counter-question-reset(level: 1, to: 0) = context counter-question.update(
-  (..nums) => counter-with-acc-reset(nums.pos(), level: level, to: to),
+#let sxj-counter-question-update(level: 1, to: 0) = context counter-question.update(
+  (..nums) => counter-with-acc-update(nums.pos(), level: level, to: to),
 )

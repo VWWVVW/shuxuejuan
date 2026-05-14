@@ -45,45 +45,39 @@
 ) = {
   // Note: wrap the `tag` in two `box`es so that `set align(right)`
   //   won't compress `"."` if it is the last char of `tag`.
-  let tag-in-box = box(
+  let tag = box(
     width: hanging-indent,
     align(tag-align, box(
       width: auto,
       align(left, tag),
     )),
   )
+  let tag = {
+    let tag-down = args.at("tag-down", default: none)
+    if tag-down != none { v(tag-down) }
+    tag
+  }
+  let body = {
+    let body-down = args.at("body-down", default: none)
+    if body-down != none { v(body-down) }
+    body
+  }
   if composer == COMPOSER.TERMS {
     terms(
       indent: 0em,
       separator: none,
       tight: false,
       hanging-indent: hanging-indent,
-      (
-        tag-in-box,
-        {
-          let body-up = args.at("body-up", default: none)
-          if body-up != none { v(body-up) }
-          body
-        },
-      ),
+      (tag, body),
     )
   } else if composer == COMPOSER.GRID {
     grid(
       gutter: 0em,
       columns: (hanging-indent, 1fr),
-      {
-        let tag-down = args.at("tag-down", default: none)
-        if tag-down != none { v(tag-down) }
-        tag-in-box
-      },
-      {
-        let body-up = args.at("body-up", default: none)
-        if body-up != none { v(body-up) }
-        body
-      },
+      tag, body,
     )
   } else if composer == COMPOSER.PAR {
     set par(hanging-indent: hanging-indent)
-    [#tag-in-box#body]
+    [#tag#body]
   }
 }

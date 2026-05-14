@@ -5,6 +5,7 @@
   numbering-info: ("一、", "1.", "(1)", "①"),
   numbers,
 ) = {
+  // Note: in `my-numbering`, `level` starts from 0.
   let my-numbering = if type(numbering-info) == array {
     (level, index) => {
       numbering(numbering-info.at(level, default: "1."), index)
@@ -13,7 +14,7 @@
     numbering-info
   } else {
     (level, index) => numbering("1.", index)
-  } // Note: `level` starts from 0 in `fn numbers-numbering`
+  }
   return numbers.enumerate().map(((i, num)) => my-numbering(i, num))
 }
 
@@ -26,9 +27,9 @@
   ).at(level - 1),
   body,
 ) = {
-  body = sxj-content-trim(body)
+  let body = sxj-content-trim(body)
 
-  counter-question.update((..nums) => counter-with-acc-next(nums.pos(), level))
+  counter-question.update((..nums) => counter-with-acc-step(nums.pos(), level))
   counter-answer.update(0)
   context [#metadata((
     type: SXJ-BODY-TYPE.QST,

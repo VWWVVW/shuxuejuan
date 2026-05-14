@@ -14,7 +14,7 @@
 #let ans = sxj-answer-jie
 #let qst = sxj-question
 #let qg = sxj-question-group
-#let cr = sxj-counter-question-reset
+#let cu = sxj-counter-question-update
 
 #let shuxuejuan(
   font-size: (small: 10.5pt, medium: 12pt, large: 14pt),
