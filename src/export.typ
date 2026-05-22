@@ -12,7 +12,7 @@
 #let br = sxj-bracket
 #let bl = sxj-blank
 #let ans = sxj-answer-jie
-#let qst = sxj-question
+#let qst(..args) = context sxj-question-zh(..args)
 #let qg = sxj-question-group
 #let cu = sxj-counter-question-update
 
@@ -41,21 +41,7 @@
     ),
   )
 
-  show heading: it => {
-    set text(
-      size: env-get("font-size").small,
-      weight: if it.level == 1 { "bold" } else { "medium" },
-    )
-    sxj-question(
-      composer: env-get("qst-style"),
-      level: it.level,
-      hanging-indent: ((2, measure("10.").width), (3, measure(" () ").width))
-        .filter(((level, _)) => level == it.level)
-        .map(((_, val)) => val)
-        .first(default: auto),
-      it.body,
-    )
-  }
+  show heading: it => sxj-question-zh(level: it.level, it.body)
   show ref: it => sxj-ref-to-question(
     ref-style: env-get("ref-style"),
     it,

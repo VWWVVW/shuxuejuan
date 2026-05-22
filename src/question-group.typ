@@ -45,8 +45,13 @@
   ).flatten()
 }
 
-#let sxj-qg-to-qst(envs, cnts) = (
-  cnts.chunks(2).map(((qst, ans)) => (sxj-question(level: envs.level, qst), ans)).flatten()
+#let sxj-qg-to-qst-zh(envs, cnts) = (
+  cnts
+    .chunks(2)
+    .map(
+      ((qst, ans)) => (sxj-question-zh(level: envs.level, qst), ans),
+    )
+    .flatten()
 )
 
 #let sxj-qg-to-ans-jie(envs, cnts) = (
@@ -64,7 +69,7 @@
     ))
 )
 
-#let sxj-qg-pcs-basic = (sxj-qg-to-qst, sxj-qg-pack)
+#let sxj-qg-pcs-basic = (sxj-qg-to-qst-zh, sxj-qg-pack)
 #let sxj-qg-pcs-std = (sxj-qg-add-punc,) + sxj-qg-pcs-basic
 #let sxj-qg-pcs-tf = (sxj-qg-add-punc, sxj-qg-mv-ans-to-br) + sxj-qg-pcs-basic
 

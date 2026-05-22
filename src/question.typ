@@ -46,3 +46,19 @@
     body,
   )
 }
+
+#let sxj-question-zh(level: 2, body) = {
+  set text(
+    size: env-get("font-size").small,
+    weight: if level == 1 { "bold" } else { "medium" },
+  )
+  sxj-question(
+    composer: env-get("qst-style"),
+    level: level,
+    hanging-indent: ((2, measure("10.").width), (3, measure(" () ").width))
+      .filter(((level, _)) => level == level)
+      .map(((_, val)) => val)
+      .first(default: auto),
+    body,
+  )
+}
