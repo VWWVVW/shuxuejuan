@@ -22,7 +22,13 @@
   ans-shown: true,
   body,
 ) = {
-  context env-upd(font-size: font-size, ans-shown: ans-shown)
+  // DNF: Updating `env`s in one `env-upd` is buggy, e.g. one
+  //   of `env-upd(font-size: font-size, ans-shown: ans-shown)`
+  //   and `env-upd(ans-shown: ans-shown, font-size: font-size)`
+  //   would not update `ans-shown`.
+  context env-upd(font-size: font-size)
+  context env-upd(ans-shown: ans-shown)
+  context env-upd(fn-number: counter-with-acc-to-nums)
   show "。": "．"
 
   set page(
@@ -47,18 +53,11 @@
         .filter(((level, _)) => level == it.level)
         .map(((_, val)) => val)
         .first(default: auto),
-      counter-with-acc-to-num: (counter-got, level) => (
-        sxj-numbering-numbers(
-          counter-with-acc-to-nums(counter-got),
-        ).at(level - 1)
-          + if level in (2, 3) [ ]
-      ),
       it.body,
     )
   }
   show ref: it => sxj-ref-to-question(
     ref-style: env-get("ref-style"),
-    counter-with-acc-to-nums: counter-with-acc-to-nums,
     it,
   )
   show title: it => sxj-title(size: env-get("font-size").large, body: it)

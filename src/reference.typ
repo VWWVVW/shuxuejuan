@@ -2,7 +2,7 @@
 
 #let sxj-ref-to-question(
   ref-style: auto,
-  counter-with-acc-to-nums: sxj-counter-with-acc-to-nums-default,
+  counter-with-acc-to-nums: auto,
   it,
 ) = {
   let counter-here = counter-question.get()
@@ -22,6 +22,9 @@
     ct-there += (0,) * (ct-here.len() - ct-there.len())
   }
 
+  let counter-with-acc-to-nums = if counter-with-acc-to-nums == auto {
+    env-get("fn-number")
+  } else { counter-with-acc-to-nums }
   let nums = sxj-numbering-numbers(counter-with-acc-to-nums(counter-there))
   let body = if ref-style == auto {
     let idx-diff = ct-here

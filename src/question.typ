@@ -22,9 +22,7 @@
   composer: auto,
   level: 2,
   hanging-indent: auto,
-  counter-with-acc-to-num: (counter-got, level) => sxj-numbering-numbers(
-    sxj-counter-with-acc-to-nums-default(counter-got),
-  ).at(level - 1),
+  nums-to-num: (nums, level) => sxj-numbering-numbers(nums).at(level - 1),
   body,
 ) = {
   let body = sxj-content-trim(body)
@@ -36,7 +34,9 @@
     counter-question: counter-question.get(),
   ))<sxj-label-question>]
 
-  let num = context counter-with-acc-to-num(counter-question.get(), level) + sym.wj
+  let num = context (
+    nums-to-num(env-get("fn-number")(counter-question.get()), level) + sym.wj
+  )
   context sxj-term(
     composer: sxj-get-composer-for(composer: composer, body),
     hanging-indent: if hanging-indent == auto {

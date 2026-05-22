@@ -7,44 +7,6 @@
   ),
 )
 
-#let env = state(
-  "env",
-  (
-    ans-shown: true,
-    qst-style: auto,
-    ref-style: auto,
-    font-size: (small: 10.5pt, medium: 12pt, large: 14pt),
-  ),
-)
-#let env-check(key) = assert(
-  key in env.get().keys(),
-  message: "No \"" + key + "\" in env.",
-)
-#let env-get(key, default: auto) = {
-  env-check(key)
-  return env.get().at(key, default: default)
-}
-#let env-copy(keys) = {
-  return keys.map(k => (k, env-get(k))).to-dict()
-}
-#let _env-upd(key, val) = {
-  env-check(key)
-  let env-new = env.get()
-  env-new.at(key) = val
-  env.update(env-new)
-}
-#let env-upd(..dict) = {
-  for (key, val) in dict.named() {
-    _env-upd(key, val)
-  }
-}
-#let with-env(..dict, body) = context {
-  let env-old = env-copy(dict.named().keys())
-  env-upd(..dict)
-  body
-  env-upd(..env-old)
-}
-
 #let counter-answer = counter("sxj-counter-answer")
 
 #let counter-question = counter("sxj-counter-question")
@@ -102,3 +64,42 @@
 #let sxj-counter-question-update(level: 1, to: 0) = context counter-question.update(
   (..nums) => counter-with-acc-update(nums.pos(), level: level, to: to),
 )
+
+#let env = state(
+  "env",
+  (
+    ans-shown: true,
+    fn-number: sxj-counter-with-acc-to-nums-default,
+    qst-style: auto,
+    ref-style: auto,
+    font-size: (small: 10.5pt, medium: 12pt, large: 14pt),
+  ),
+)
+#let env-check(key) = assert(
+  key in env.get().keys(),
+  message: "No \"" + key + "\" in env.",
+)
+#let env-get(key, default: auto) = {
+  env-check(key)
+  return env.get().at(key, default: default)
+}
+#let env-copy(keys) = {
+  return keys.map(k => (k, env-get(k))).to-dict()
+}
+#let _env-upd(key, val) = {
+  env-check(key)
+  let env-new = env.get()
+  env-new.at(key) = val
+  env.update(env-new)
+}
+#let env-upd(..dict) = {
+  for (key, val) in dict.named() {
+    _env-upd(key, val)
+  }
+}
+#let with-env(..dict, body) = context {
+  let env-old = env-copy(dict.named().keys())
+  env-upd(..dict)
+  body
+  env-upd(..env-old)
+}
