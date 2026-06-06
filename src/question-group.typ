@@ -69,15 +69,15 @@
     ))
 )
 
-#let sxj-qg-pcs-basic = (sxj-qg-to-qst-zh, sxj-qg-pack)
-#let sxj-qg-pcs-std = (sxj-qg-add-punc,) + sxj-qg-pcs-basic
-#let sxj-qg-pcs-tf = (sxj-qg-add-punc, sxj-qg-mv-ans-to-br) + sxj-qg-pcs-basic
+#let sxj-qg-bchr-basic = (sxj-qg-to-qst-zh, sxj-qg-pack)
+#let sxj-qg-bchr-std = (sxj-qg-add-punc,) + sxj-qg-bchr-basic
+#let sxj-qg-bchr-tf = (sxj-qg-add-punc, sxj-qg-mv-ans-to-br) + sxj-qg-bchr-basic
 
 #let sxj-question-group(
   col: 2,
   gutter: 0em,
   level: auto,
-  preprocessor: sxj-qg-pcs-std,
+  batcher: sxj-qg-bchr-std,
   ..contents,
 ) = context {
   let envs = (
@@ -85,7 +85,7 @@
     gutter: gutter,
     level: sxj-qg-get-level((level: level)),
   )
-  let cnts = preprocessor.fold(contents.pos(), (acc, pcs) => pcs(envs, acc))
+  let cnts = batcher.fold(contents.pos(), (acc, pcs) => pcs(envs, acc))
 
   v(-.5 * par.spacing)
   grid(

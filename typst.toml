@@ -9,4 +9,4 @@ license = "MIT"
 description = "A simple Typst template for math exam in Chinese."
 keywords = ["math", "exam", "Chinese"]
 categories = ["utility"]
-exclude = ["examples"]
+exclude = ["docs"]
