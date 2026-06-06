@@ -73,7 +73,7 @@
     ans-shown: true,
     fn-number: sxj-counter-with-acc-to-nums-default,
     qst-style: auto,
-    ref-style: auto,
+    ref-style: 0,
     font-size: (tiny: 7.5pt, small: 9pt, medium: 10.5pt, big: 12pt, huge: 14pt),
   ),
 )

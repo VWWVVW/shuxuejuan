@@ -72,7 +72,12 @@
       )),
       width: if measure(answer).width < .9em.to-absolute() {
         1em
-      } else { 1.7em },
+      } else {
+        // Note: width for multi-choice answer.
+        //   Width of `#[ABCD]` might not be `2em` in some
+        //   fonts, so `measure` is needed here.
+        measure[ABCD].width
+      },
     )
     + [）]
 )
