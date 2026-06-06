@@ -17,7 +17,7 @@
 #let cu = sxj-counter-question-update
 
 #let shuxuejuan(
-  font-size: (small: 10.5pt, medium: 12pt, large: 14pt),
+  font-size: (tiny: 7.5pt, small: 9pt, medium: 10.5pt, big: 12pt, huge: 14pt),
   counter-with-acc-to-nums: sxj-counter-with-acc-to-nums-default,
   ans-shown: true,
   body,
@@ -46,7 +46,7 @@
     ref-style: env-get("ref-style"),
     it,
   )
-  show title: it => sxj-title(size: env-get("font-size").large, body: it)
+  show title: it => sxj-title(size: env-get("font-size").huge, body: it)
   show math.equation: it => sxj-equ(spacing: .2em, it)
 
   body

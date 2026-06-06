@@ -74,7 +74,7 @@
     fn-number: sxj-counter-with-acc-to-nums-default,
     qst-style: auto,
     ref-style: auto,
-    font-size: (small: 10.5pt, medium: 12pt, large: 14pt),
+    font-size: (tiny: 7.5pt, small: 9pt, medium: 10.5pt, big: 12pt, huge: 14pt),
   ),
 )
 #let env-check(key) = assert(

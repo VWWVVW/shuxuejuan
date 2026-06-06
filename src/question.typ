@@ -49,7 +49,7 @@
 
 #let sxj-question-zh(level: 2, body) = {
   set text(
-    size: env-get("font-size").small,
+    size: env-get("font-size").medium,
     weight: if level == 1 { "bold" } else { "medium" },
   )
   sxj-question(
