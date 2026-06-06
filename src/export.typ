@@ -11,7 +11,7 @@
 #let op = sxj-options
 #let br = sxj-bracket
 #let bl = sxj-blank
-#let ans = sxj-answer-jie
+#let ans = sxj-answer-sol
 #let qst(..args) = context sxj-question-zh(..args)
 #let qg = sxj-question-group
 #let cu = sxj-counter-question-update

@@ -2,6 +2,8 @@
   QST: "question",
   ANS: (
     RAW: "answer raw",
+    SOL: "answer to problem-solving question",
+    PF: "answer to proof question",
     BL: "answer in blank",
     BR: "answer in bracket",
   ),

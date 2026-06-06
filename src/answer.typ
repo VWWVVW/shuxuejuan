@@ -28,18 +28,23 @@
   }
 }
 
-#let sxj-answer-jie(
+#let sxj-answer-sol(
+  ans-type: SXJ-BODY-TYPE.ANS.SOL,
   shown: auto,
   fill: color.maroon,
   composer: auto,
   height: auto,
   body,
 ) = context {
-  let tag = [解：] + sym.wj
+  let tag = if ans-type == SXJ-BODY-TYPE.ANS.SOL {
+    "解：" + sym.wj
+  } else if ans-type == SXJ-BODY-TYPE.ANS.PF {
+    "证明：" + sym.wj
+  } else { panic("Invalid answer type") }
   box(
     height: height,
     sxj-answer(
-      ans-type: SXJ-BODY-TYPE.ANS.RAW,
+      ans-type: ans-type,
       shown: shown,
       fill: fill,
       sxj-term(
