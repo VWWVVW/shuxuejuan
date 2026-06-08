@@ -40,8 +40,19 @@
   context sxj-term(
     composer: sxj-get-composer-for(composer: composer, body),
     hanging-indent: if hanging-indent == auto {
-      measure[#num].width
-    } else { hanging-indent },
+      measure(num).width
+    } else if type(hanging-indent) == length {
+      hanging-indent
+    } else if type(hanging-indent) == dictionary {
+      let len = measure(num).width
+      if "min" in hanging-indent {
+        len = calc.max(len, hanging-indent.min.to-absolute())
+      }
+      if "max" in hanging-indent {
+        len = calc.min(len, hanging-indent.max.to-absolute())
+      }
+      len
+    },
     num,
     body,
   )
@@ -52,13 +63,10 @@
     size: env-get("font-size").medium,
     weight: if level == 1 { "bold" } else { "medium" },
   )
-  sxj-question(
+  context sxj-question(
     composer: env-get("qst-style"),
     level: level,
-    hanging-indent: ((2, measure("10.").width), (3, measure(" () ").width))
-      .filter(((level, _)) => level == level)
-      .map(((_, val)) => val)
-      .first(default: auto),
+    hanging-indent: env-get("qst-tag-w").at(level - 1, default: auto),
     body,
   )
 }

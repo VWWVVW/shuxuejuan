@@ -70,11 +70,12 @@
 #let env = state(
   "env",
   (
-    ans-shown: true,
-    fn-number: sxj-counter-with-acc-to-nums-default,
-    qst-style: auto,
-    ref-style: 0,
     font-size: (tiny: 7.5pt, small: 9pt, medium: 10.5pt, big: 12pt, huge: 14pt),
+    qst-style: auto,
+    fn-number: sxj-counter-with-acc-to-nums-default,
+    qst-tag-w: (auto, (min: 1.5em), (min: 1.5em)),
+    ans-shown: true,
+    ref-style: 0,
   ),
 )
 #let env-check(key) = assert(
