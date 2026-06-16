@@ -68,7 +68,7 @@
       separator: none,
       tight: false,
       hanging-indent: hanging-indent,
-      (tag, body),
+      terms.item(tag, body),
     )
   } else if composer == COMPOSER.GRID {
     grid(

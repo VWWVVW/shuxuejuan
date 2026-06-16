@@ -29,7 +29,7 @@
   cnts.chunks(2).map(((qst, ans)) => (qst + [；], ans)).flatten()
 )
 
-// DNF: causes `layout did not converge winthin 5 attempts`
+// DNF: buggy, might cause layout convergence warnings too.
 #let sxj-qg-add-auto-punc(envs, cnts) = {
   let levels = query(
     selector(<sxj-label-question>).after(here()),

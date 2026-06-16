@@ -75,11 +75,12 @@
     fn-number: sxj-counter-with-acc-to-nums-default,
     qst-tag-w: (auto, (min: 1.5em), (min: 1.5em)),
     ans-shown: true,
+    ans-color: color.maroon,
     ref-style: 0,
   ),
 )
 #let env-check(key) = assert(
-  key in env.get().keys(),
+  key in env.get(),
   message: "No \"" + key + "\" in env.",
 )
 #let env-get(key, default: auto) = {
@@ -95,6 +96,12 @@
   env-new.at(key) = val
   env.update(env-new)
 }
+// DNF: Updating `env`s in one `env-upd` is buggy, e.g. one
+//   of `env-upd(font-size: font-size, ans-shown: ans-shown)`
+//   and `env-upd(ans-shown: ans-shown, font-size: font-size)`
+//   would not update `ans-shown`.
+// DNF: Using this func for too many times (at once?) might
+//   cause layout convergence warnings.
 #let env-upd(..dict) = {
   for (key, val) in dict.named() {
     _env-upd(key, val)

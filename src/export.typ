@@ -27,20 +27,7 @@
 )
 #let cu = sxj-counter-question-update
 
-#let shuxuejuan(
-  font-size: (tiny: 7.5pt, small: 9pt, medium: 10.5pt, big: 12pt, huge: 14pt),
-  counter-with-acc-to-nums: sxj-counter-with-acc-to-nums-default,
-  ans-shown: true,
-  body,
-) = {
-  // DNF: Updating `env`s in one `env-upd` is buggy, e.g. one
-  //   of `env-upd(font-size: font-size, ans-shown: ans-shown)`
-  //   and `env-upd(ans-shown: ans-shown, font-size: font-size)`
-  //   would not update `ans-shown`.
-  context env-upd(font-size: font-size)
-  context env-upd(ans-shown: ans-shown)
-  context env-upd(fn-number: counter-with-acc-to-nums)
-
+#let shuxuejuan(body) = {
   show title: it => sxj-title(size: env-get("font-size").huge, body: it)
   show heading: it => sxj-question-zh(level: it.level, it.body)
   show ref: it => if it.element == none {

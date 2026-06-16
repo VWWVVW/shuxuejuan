@@ -4,7 +4,7 @@
 #let sxj-answer(
   ans-type: SXJ-BODY-TYPE.ANS.RAW,
   shown: auto,
-  fill: color.maroon,
+  fill: auto,
   body,
 ) = {
   // Note: use two `context`s here to make sure `counter-answer.get()`
@@ -16,7 +16,9 @@
       env-get("ans-shown")
     } else { shown }
 
-    set text(fill: fill)
+    set text(fill: if fill == auto {
+      env-get("ans-color")
+    } else { fill })
     if shown { body } else { hide(body) }
 
     [#metadata((
@@ -31,7 +33,7 @@
 #let sxj-answer-sol(
   ans-type: SXJ-BODY-TYPE.ANS.SOL,
   shown: auto,
-  fill: color.maroon,
+  fill: auto,
   composer: auto,
   height: auto,
   body,
@@ -59,7 +61,7 @@
 
 #let sxj-bracket(
   shown: auto,
-  fill: color.maroon,
+  fill: auto,
   answer,
 ) = context (
   [（]
@@ -84,7 +86,7 @@
 
 #let sxj-blank(
   shown: auto,
-  fill: color.maroon,
+  fill: auto,
   scale: auto,
   answer,
 ) = context {
