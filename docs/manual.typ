@@ -1,4 +1,4 @@
-#import "../lib.typ": *
+#import "/src/lib.typ": *
 #show: shuxuejuan
 #context env-upd(fn-number: sxj-counter-with-acc-to-nums-normal)
 
@@ -51,13 +51,13 @@
   === 其他：选择题选项排版、对题号的引用、学生信息栏等相关函数。
 ]<sxj.feat>
 
-= 常用函数（使用时）：见 @export.fn-common 。
+= 常用函数（使用时）：见 @lib.fn-common 。
 
 = 例子（仅供参考，见 @issue.example-dnf 与 @issue.using-shuxuejuan-or-not ）<example>
 
-== 绑定内置函数（使用```typ #show: shuxuejuan```）示例：#link("example.typ")；
+== 作为模板使用（使用```typ #show: shuxuejuan```）示例：#link("example.typ")；
 
-== 不绑定内置函数版本（不使用```typ #show: shuxuejuan```）：#link("example-unbound.typ")。
+== 作为普通包使用（不使用```typ #show: shuxuejuan```）：#link("example-no-template.typ")。
 
 #pagebreak()
 
@@ -195,7 +195,7 @@
 
 ]
 
-== 封装导出：`export.typ`\ #p[
+== 封装导出：`lib.typ`\ #p[
   此文件中不应也不会为本包添加除了绑定之外的任何（新）功能。
 
   === 提供常用函数的缩写别名（见文件开头的一堆```typ #let```）#[
@@ -205,7 +205,7 @@
         ```typ #let cu = sxj-counter-question-update.with(level: 3)```\
         以覆盖默认`cu`。
       ]
-  ]<export.fn-common>
+  ]<lib.fn-common>
   === `shuxuejuan`，建议使用`show: shuxuejuan`，当然也可以不用或复制部分源码选择性启用下列功能：#[
     ==== 将常用函数与内置函数绑定：#[
       - 将`sxj-question-zh`绑定到`heading`；

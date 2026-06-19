@@ -1,5 +1,5 @@
 // Note: 为方便调试，此处使用相对路径。
-#import "/lib.typ": *
+#import "/src/lib.typ": *
 
 // Note: 使用`show: shuxuejuan`，将常用函数绑定到内置的`heading`，`ref`等上。
 #show: shuxuejuan

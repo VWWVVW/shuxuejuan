@@ -1,5 +1,5 @@
 // Note: 为方便调试，此处使用相对路径。
-#import "/lib.typ": *
+#import "/src/lib.typ": *
 
 // Note: 不使用`show: shuxuejuan`时的额外设置。
 #show math.equation: it => sxj-equ(spacing: .2em, it)
