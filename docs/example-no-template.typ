@@ -5,9 +5,9 @@
 #show math.equation: it => sxj-equ(spacing: .2em, it)
 #show "。": "．"
 #set page(
-  width: 19.5cm,
-  height: 27cm,
-  margin: 37pt,
+  width: 18.4cm,
+  height: 26cm,
+  margin: 19pt,
   footer: context sxj-footer(
     counter(page).get().first(),
     counter(page).final().first(),
@@ -16,14 +16,15 @@
 #set par(justify: true)
 
 // Note: 以下内容可选择性开启或设置，去掉注释看看有何变化？
-// DNF: 此处多次调用`env-upd`会引发`convergence`问题与bug，故单次请勿取消过多行注释。
-// #context env-upd(font-size: env-get("font-size") + (medium: 11pt))
-// #context env-upd(qst-style: COMPOSER.GRID)
-// #context env-upd(fn-number: sxj-counter-with-acc-to-nums-normal)  // Note: 常用
-// #context env-upd(qst-tag-w: (auto, 1em, 1em))
-// #context env-upd(ans-shown: false)  // Note: 常用
-// #context env-upd(ans-color: color.rgb(238, 0, 0))
-// #context env-upd(ref-style: 1)
+#context env-upd(
+  // font-size: env-get("font-size") + (medium: 11pt),
+  // qst-style: COMPOSER.GRID,
+  // fn-number: sxj-counter-with-acc-to-nums-normal,  // Note: 常用。
+  // qst-tag-w: (auto, 1em, 1em),
+  // ans-shown: false,                                // Note: 常用。
+  // ans-color: color.rgb(238, 0, 0),
+  // ref-style: 1,
+)
 
 // Note: 为了字体，页面更好看的设置。
 #set page(margin: (top: 19pt))
@@ -98,7 +99,7 @@
     #qst(level: 3)[
       对满足$abs(p_1q_2-p_2q_1)=1$的既约分数$p_1/q_1$与$p_2/q_2$，有$F(p_1/q_1)$与$F(p_2/q_2)$相外切。
     ]<qst-ford-2-circle>
-    // #context v(-par.leading)
+    #context v(-par.leading)
     #qst(level: 3)[
       对任意既约分数$a,b,c(a!=b,c=a fsum b)$，若$F(a)$与$F(b)$相切，则$F(c)$与$F(a),F(b)$均相切。
     ]

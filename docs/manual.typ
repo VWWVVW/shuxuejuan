@@ -11,6 +11,7 @@
   bottom-edge: -2pt,
   it,
 )
+#show link: it => underline(it)
 #set raw(lang: "typc")
 #show raw: set text(font: "Maple Mono NF")
 #show raw.where(block: false): it => box(
@@ -55,9 +56,9 @@
 
 = 例子（仅供参考，见 @issue.example-dnf 与 @issue.using-shuxuejuan-or-not ）<example>
 
-== 作为模板使用（使用```typ #show: shuxuejuan```）示例：#link("example.typ")；
+== 作为模板使用（使用```typ #show: shuxuejuan```）：#link("../example.typ")；
 
-== 作为普通包使用（不使用```typ #show: shuxuejuan```）：#link("example-no-template.typ")。
+== 作为普通包使用（不使用```typ #show: shuxuejuan```）：#link("../example-no-template.typ")。
 
 #pagebreak()
 
@@ -215,7 +216,7 @@
     ]
     ==== 进行默认设置：#[
       - 句号显示为句点；
-      - 页面设置为16开#footnote[此处指$19.5 #un[cm] times 27 #un[cm]$，根据本人经验，各处的16开大小不一，你可能需要根据实际情况调整。]，缩小页边距，设置页码页脚。
+      - 页面设置为16开#footnote[此处指$18.4 #un[cm] times 26 #un[cm]$，根据本人经验，各处的16开大小不一，你可能需要根据实际情况调整。]，缩小页边距，设置页码页脚。
     ]
   ]
 ]
@@ -317,11 +318,25 @@
 ]
 
 == （在一个地方？）多次使用`env-upd`会导致`convergence issue`。#ts[
-  一般不会触发，除非`env`中的默认值几乎都不合你需求。
-]
+  那就不要这么用`env-upd`，如：使用
 
-== `env-upd`无法确保同时更新多个`env`字段。#ts[
-  但是可以一个一个更。
+  ```typ
+  #context env-upd(
+    font-size: env-get("font-size") + (medium: 11pt),
+    fn-number: sxj-counter-with-acc-to-nums-normal,
+    ans-shown: false,
+  )
+  ```
+
+  代替
+
+  ```typ
+  #context env-upd(font-size: env-get("font-size") + (medium: 11pt))
+  #context env-upd(fn-number: sxj-counter-with-acc-to-nums-normal)
+  #context env-upd(ans-shown: false)
+  ```
+
+  可大幅减少此问题发生概率。
 ]
 
 == 绑定内置函数与不绑定（使用/不使用`show: shuxuejuan`）时问题行间距可能不一致。#ts[
