@@ -1,77 +1,90 @@
-# ShuXueJuan
+# shuxuejuan
 
-ShuXueJuan (数学卷 in Chinese, meaning math exam) is a simple math exam Typst template.
+> [!NOTE]
+> Due to limited bandwidth, the manual and examples are provided in Chinese only and may contain occasional oversights.  
+> If you need further assistance while reading the manual, the examples, the source code, or using this package, feel free to reach out via [Issues](https://github.com/VWWVVW/shuxuejuan/issues) or [Discussions](https://github.com/VWWVVW/shuxuejuan/discussions).
+
+`shuxuejuan` (数学卷, meaning "math exam paper" in Chinese) is a simple Typst package that helps construct math exam papers with minimal setup.
 
 ## Setup
 
-```Typst
-#import "@preview/shuxuejuan:0.1.3": *
-#show: shuxuejuan.with(
-  font: ("SimSun",),                // 正文字体
-  font-bold: ("LXGW WenKai Mono",), // 用于粗体的字体
-  qst-number-level2: auto,          // 二级标题编号是否连续
+### As a template
+
+```typ
+#import "@preview/shuxuejuan:0.2.0": *
+#show: shuxuejuan
+```
+
+Then use it like:
+
+```typ
+= 选择题
+
+== 下列各说法中正确的是#br[BCD]。#op(
+  $emptyset in emptyset$,
+  $emptyset subset.eq emptyset$,
+  $emptyset in {emptyset}$,
+  $emptyset subset.eq {emptyset}$,
 )
 ```
 
-## Showcase & Feature
+### As a normal package
 
-```Typst
-// 大标题
-#set document(title: "第一、二章复习卷")
-#title()
-// 个人信息
-#si[班级][姓名][学号]
-// 小标题
-#title-small[第一章复习题]
-
-// 标题即问题
-= 解答题
-== 第一大题
-=== 第一小题
-=== 第二小题<test1>
-
-// 选择题与选项
-== 这道题请选择#br[]选项。#op[$1+1$][$1+2$][$2+1$][$2+2$]
-
-// 填空题与单位
-== 飞机的速度是#bl[]#un[m/s]。
-
-// 引用自动编号
-== 第二大题
-=== 第一小题；<test2>
-=== 利用 @test1 得到的知识，说明$1+1=2$；
-=== 利用 @test2 得到的知识，说明$1+2=3$；
-
-// 题组
-== 计算题
-#qg(
-  gutter: 6em,
-  $sum_(i=1)^(+infinity)1 / (i(i+1))$,
-  $1 - 1 / 2 + 1 / 3 - 1 / 4 + dots.c$,
-  $integral sech x space mono(d)x$,
-  $ln mono(e)^pi$,
-)
-= 判断题
-#qg(
-  preprocessor: sxj-qg-pcs-tf,
-  [啊对的，对的],
-  [啊不对，不对],
-  [啊对，不对],
-  [对的，对的],
-)
-#qg(
-  preprocessor: sxj-qg-pcs-tf,
-  level: 2,
-  col: 3,
-  [这题是对的],
-  [啊不对],
-  [对对对的],
-)
-
-// 其他细节
-== 默认采用B5版面，句号自动输出为句点。
+```typ
+#import "@preview/shuxuejuan:0.2.0": *
 ```
 
-See [example.typ](./examples/example.typ) for a more concrete example.
+Then use it like:
 
-In case you want to know, some key functions are documented in the source code.
+```typ
+#qst(level: 1)[选择题]
+
+#qst[
+  下列各说法中正确的是#br[BCD]。#op(
+    $emptyset in emptyset$,
+    $emptyset subset.eq emptyset$,
+    $emptyset in {emptyset}$,
+    $emptyset subset.eq {emptyset}$,
+  )
+]
+```
+
+### Settings
+
+```typ
+#context env-upd(
+  font-size: env-get("font-size") + (medium: 11pt),
+  qst-style: COMPOSER.GRID,
+  fn-number: sxj-counter-with-acc-to-nums-normal,  // Note: 常用。
+  qst-tag-w: (auto, 1em, 1em),
+  ans-shown: false,                                // Note: 常用。
+  ans-color: color.rgb(238, 0, 0),
+  ref-style: 1,
+)
+```
+
+## Example
+
+![Compiled `example.typ`.](./docs/outputs/example.png)
+
+[Source code to this example](./docs/example.typ).
+
+## Manual (First Page)
+
+![Compiled `manual.typ` (first page only).](./docs/outputs/manual-p1.png)
+
+Complete [source code to this manual](./docs/manual.typ), [pre-compiled pdf](./docs/outputs/manual.pdf?raw=true).
+
+## Update Strategy
+
+To avoid unnecessary version bumps, all updates are promptly pushed to the [origin repository](https://github.com/VWWVVW/shuxuejuan), and synced to [Typst Universe](https://typst.app/universe/package/shuxuejuan) after they're tested. Small updates, including documentation fixes and code changes that don't affect the output, are typically synced with a multi-week delay.
+
+Therefore, if you want to read the manual, view the examples, or submit a PR... please download the latest code from the origin repository:
+
+```bash
+git clone https://github.com/VWWVVW/shuxuejuan.git
+```
+
+## License
+
+This project is licensed under the MIT License - see the [LICENSE](./LICENSE) file for details.

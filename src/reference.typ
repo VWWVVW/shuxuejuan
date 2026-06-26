@@ -1,37 +1,45 @@
-#import "env.typ": *
 #import "question.typ": *
 
-#let sxj-ref-question(it, qst-number-level2: none) = {
-  let id-ref = id-question.at(it.target)
-  let id-crt = id-question.at(here())
-  id-ref = id-ref.slice(1, id-ref.last() + 1)
-  id-crt = id-crt.slice(1, id-crt.last() + 1)
-  let id-show = counter(question).at(it.target)
-  let level2-index = none
-  if qst-number-level2 == auto {
-    level2-index = counter-question-l2.at(it.target).first()
-    if id-show.len() > 2 + 0 {
-      // Note: don't know why but it manages
-      // to get the correct level2-index
-      level2-index -= 1
-    }
+#let sxj-ref-to-question(
+  ref-style: auto,
+  counter-with-acc-to-nums: auto,
+  it,
+) = {
+  let counter-here = counter-question.get()
+  // Note: use `query` as a workaround because currently
+  //   `counter-question.at(it.target)` can't get the actual counter.
+  let counter-there = query(
+    selector(<sxj-label-question>).after(it.target),
+  )
+    .first()
+    .value
+    .counter-question
+  let ct-here = counter-here.slice(2, counter-here.at(1) * 2 + 2)
+  let ct-there = counter-there.slice(2, counter-there.at(1) * 2 + 2)
+  if ct-here.len() < ct-there.len() {
+    ct-here += (0,) * (ct-there.len() - ct-here.len())
+  } else {
+    ct-there += (0,) * (ct-here.len() - ct-there.len())
   }
 
-  let ref-style = env-get("ref-style")
-  let qst-numbering = _get-question-numbering(
-    level2-index: level2-index,
-    numbers: id-show,
-  )
-  let body = if ref-style == auto {
-    let i = id-ref.zip(id-crt).position(x => x.at(0) != x.at(1))
-    if i == none {
-      i = -1
-    }
-    qst-numbering.slice(i).join()
-  } else if type(ref-style) == int {
-    qst-numbering.slice(ref-style).join()
+  let ref-style = if ref-style == auto { env-get("ref-style") } else { ref-style }
+  let counter-with-acc-to-nums = if counter-with-acc-to-nums == auto {
+    env-get("fn-number")
+  } else { counter-with-acc-to-nums }
+  let nums = sxj-numbering-numbers(counter-with-acc-to-nums(counter-there))
+
+  let body = if ref-style == 0 {
+    let idx-diff = ct-here
+      .chunks(2, exact: true)
+      .zip(ct-there.chunks(2, exact: true))
+      .position(((idx-here, idx-there)) => idx-here != idx-there)
+    let idx-diff = if idx-diff in (none, nums.len()) { -1 } else { idx-diff }
+    nums.slice(idx-diff).join()
+  } else if type(ref-style) == int and ref-style > 0 {
+    let len = calc.min(ref-style, nums.len())
+    nums.slice(-len).join()
   } else {
-    qst-numbering.join()
+    nums.join()
   }
-  return link(it.target)[#body]
+  link(it.target, body)
 }
